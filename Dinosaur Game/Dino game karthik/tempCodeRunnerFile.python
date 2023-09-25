@@ -1,0 +1,85 @@
+import pygame
+from pygame.locals import *
+import sys
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+
+# Initialize Pygame
+pygame.init()
+pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+
+# Constants
+FOV = 45.0
+NEAR_CLIP = 0.1
+FAR_CLIP = 50.0
+
+# Set up the perspective projection matrix
+glMatrixMode(GL_PROJECTION)
+glLoadIdentity()
+gluPerspective(FOV, (800 / 600), NEAR_CLIP, FAR_CLIP)
+glMatrixMode(GL_MODELVIEW)
+glLoadIdentity()
+
+# Starting camera position
+camera_x, camera_y, camera_z = 0, 0, -5
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    
+    # Camera movement
+    keys = pygame.key.get_pressed()
+    if keys[K_LEFT]:
+        camera_x += 0.1
+    if keys[K_RIGHT]:
+        camera_x -= 0.1
+    if keys[K_UP]:
+        camera_z += 0.1
+    if keys[K_DOWN]:
+        camera_z -= 0.1
+
+    glTranslatef(camera_x, camera_y, camera_z)
+
+    # Draw a cube
+    glBegin(GL_QUADS)
+    glVertex3f(-1, -1, -1)
+    glVertex3f( 1, -1, -1)
+    glVertex3f( 1,  1, -1)
+    glVertex3f(-1,  1, -1)
+
+    glVertex3f(-1, -1,  1)
+    glVertex3f( 1, -1,  1)
+    glVertex3f( 1,  1,  1)
+    glVertex3f(-1,  1,  1)
+
+    glVertex3f(-1, -1, -1)
+    glVertex3f( 1, -1, -1)
+    glVertex3f( 1, -1,  1)
+    glVertex3f(-1, -1,  1)
+
+    glVertex3f(-1,  1, -1)
+    glVertex3f( 1,  1, -1)
+    glVertex3f( 1,  1,  1)
+    glVertex3f(-1,  1,  1)
+
+    glVertex3f(-1, -1, -1)
+    glVertex3f(-1,  1, -1)
+    glVertex3f(-1,  1,  1)
+    glVertex3f(-1, -1,  1)
+
+    glVertex3f( 1, -1, -1)
+    glVertex3f( 1,  1, -1)
+    glVertex3f( 1,  1,  1)
+    glVertex3f( 1, -1,  1)
+    glEnd()
+
+    pygame.display.flip()
+    pygame.time.wait(10)
+
+pygame.quit()
+sys.exit()
